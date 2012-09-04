@@ -92,3 +92,18 @@
           royal-flush-hand (map #(build-card % :hearts) [14 13 12 11 10])]
     (is (= :second (winner flush-hand
                            royal-flush-hand))))))
+
+(deftest parsing
+  (testing "parse one line"
+    (is (= [[(build-card 8 :clubs)
+             (build-card 10 :spades)
+             (build-card 13 :clubs)
+             (build-card 9 :hearts)
+             (build-card 4 :spades)]
+            [(build-card 7 :diamonds)
+             (build-card 2 :spades)
+             (build-card 5 :diamonds)
+             (build-card 3 :spades)
+             (build-card 14 :clubs)]]
+           (parse-line "8C TS KC 9H 4S 7D 2S 5D 3S AC")))))
+

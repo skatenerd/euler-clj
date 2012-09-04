@@ -1,15 +1,19 @@
-(ns euler.54)
+(ns euler.54
+  (:require [clojure.string :as string]))
 
-(declare handz get-highest-satisfied-category has-straight-flush has-flush has-straight has-two-pair who-wins has-highest-card has-pair pair-winner pair-card has-triple triple-card has-full-house has-quadruple quadruple-card)
+(declare categoriez highest-satisfied-category has-straight-flush has-flush has-straight has-two-pair who-wins has-highest-card has-pair pair-winner pair-card has-triple triple-card has-full-house has-quadruple quadruple-card)
 
 
 (defn hand-summary [hand composing-card]
   {:hand hand :composing-card composing-card})
 
-(defn sort-descending [hand]
-  (sort #(> %1 %2) hand))
+(defn sort-descending [items]
+  (sort #(> %1 %2) items))
 
-(defn build-hand [hand hand-numbers]
+(defn sorted-cards [hand]
+  (sort-descending (map :number hand)))
+
+(defn associate-composing-card [hand hand-numbers]
   (let [composing-card-fn (:composing-card hand)]
     (assoc 
       hand 
@@ -20,44 +24,42 @@
  (let [detector (:detector configuration)]
    (detector hand hand-numbers)))
 
-
-(defn get-highest-satisfied-category [hand]
+(defn highest-satisfied-category [hand]
   (let [hand-numbers (map :number hand)
-        hands-satisfied (filter #(satisfied % hand hand-numbers) handz)
-        first-satisfied (first hands-satisfied)
-        ]
-    (build-hand
-      first-satisfied
+        categories-satisfied (filter #(satisfied % hand hand-numbers) categoriez)
+        first-category-satisfied (first categories-satisfied) ]
+    (associate-composing-card
+      first-category-satisfied
       hand-numbers)))
 
 (defn analyze-hand [hand]
-  {:sorted-cards (sort-descending (map :number hand))
-   :highest-satisfied-category (get-highest-satisfied-category hand)})
+  (highest-satisfied-category hand))
 
-(defn category-winner [first-hand second-hand]
+(defn category-winner [first-hand-summary second-hand-summary]
   (who-wins #(>
-               (:priority (:highest-satisfied-category %1))
-               (:priority (:highest-satisfied-category %2)))
-            first-hand
-            second-hand))
+               (:priority %1)
+               (:priority %2))
+            first-hand-summary
+            second-hand-summary))
 
-(defn composing-card-winner [first-hand second-hand]
+(defn category-tie-breaker [first-hand-summary second-hand-summary]
   (who-wins #(>
-               (:composing-card (:highest-satisfied-category %1))
-               (:composing-card (:highest-satisfied-category %2)))
-            first-hand
-            second-hand))
+               (:composing-card %1)
+               (:composing-card %2))
+            first-hand-summary
+            second-hand-summary))
 
-(defn hand-based-winner [first-hand second-hand]
+(defn category-based-winner [first-hand second-hand]
   (or (category-winner first-hand second-hand)
-    (composing-card-winner first-hand second-hand)))
+    (category-tie-breaker first-hand second-hand)))
 
 (defn winner [first-hand second-hand]
   (let [first-hand-analyzed (analyze-hand first-hand)
         second-hand-analyzed (analyze-hand second-hand)]
     (or
-      (hand-based-winner first-hand-analyzed second-hand-analyzed)
-      (has-highest-card (:sorted-cards first-hand-analyzed) (:sorted-cards second-hand-analyzed)))))
+      (category-based-winner first-hand-analyzed second-hand-analyzed)
+      (has-highest-card (sorted-cards first-hand)
+                        (sorted-cards second-hand)))))
 
 (defn who-wins [score-fn first-hand second-hand]
   (if (score-fn first-hand second-hand)
@@ -139,7 +141,7 @@
       (who-wins #(> (first %1) (first %2))
                 first-hand
                 second-hand))))
-(def handz
+(def categoriez
   [{:hand :straight-flush
     :priority 9
     :detector has-straight-flush
@@ -176,3 +178,59 @@
     :priority 1
     :detector (fn [_ _] true)
     :composing-card #(apply max %)}])
+
+(def number-parse-lookup
+  {
+   "1" 1
+   "2" 2
+   "3" 3
+   "4" 4
+   "5" 5
+   "6" 6
+   "7" 7
+   "8" 8
+   "9" 9
+   "T" 10
+   "J" 11
+   "Q" 12
+   "K" 13
+   "A" 14
+   })
+
+(def suit-parse-lookup
+  {
+   "C" :clubs
+   "S" :spades
+   "H" :hearts
+   "D" :diamonds
+   })
+
+(defn parse-card [card-string]
+  (let [number-string (str (first card-string))
+        suit-string (str (second card-string))]
+    {
+     :number (get number-parse-lookup number-string)
+     :suit (get suit-parse-lookup suit-string)
+     }))
+
+(defn parse-hand [hand-string]
+  (map parse-card hand-string))
+
+(defn parse-line [line]
+  (let [splitted (string/split line #" ")
+        first-hand (take 5 splitted)
+        second-hand (drop 5 splitted)]
+    [(parse-hand first-hand)
+     (parse-hand second-hand)]))
+
+
+(defn -main []
+  (with-open [rdr (clojure.java.io/reader "src/euler/poker.txt")]
+    (reduce
+      (fn [total current-line]
+        (let [winner (apply winner (parse-line current-line))]
+          (if (= :first winner)
+            (inc total)
+            total)))
+      0
+      (line-seq rdr))))
