@@ -3,5 +3,5 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :main euler.55
+  :main euler.58
   :dependencies [[org.clojure/clojure "1.4.0"]])
