@@ -5,7 +5,7 @@
 (deftest ratios
   (testing "radius 3"
     (is (=
-          (diag-prime-ratio 3)
+          (ratio-for-statistic (nth diag-prime-statistics 2))
           (/ 8 13)))))
 
 
