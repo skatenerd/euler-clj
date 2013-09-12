@@ -1,6 +1,5 @@
 (ns euler.search)
 
-
 (defn truncated-half-count [items]
   (int (/ (count items) 2)))
 
@@ -16,7 +15,7 @@
 (defn take-half [items]
   (take (truncated-half-count items) items))
 
-(defn new-items [items function target]
+(defn filtered-items [items function target]
   (let [middle-value (function (middle-item items))]
     (cond
       (= middle-value target)
@@ -29,6 +28,6 @@
 (defn binary-search [items function target]
   (if (= 1 (count items))
     (first items)
-    (binary-search (new-items items function target) function target)
+    (binary-search (filtered-items items function target) function target)
   ))
 
