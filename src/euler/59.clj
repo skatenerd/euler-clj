@@ -31,11 +31,25 @@
 (pad-to numz 8 0)))
 
 (defn char-for-i [i]
-  (Character/toString (char i)))
+  (first (seq (Character/toString (char i)))))
 
 (defn char-for-bits [b]
-  (char-for-i (unbitify b))
-  )
+  (char-for-i (unbitify b)))
 
 (defn bits-for-char [c]
   (bitify (int c)))
+
+(defn xor [a b] (if (= a b) 0 1))
+
+(defn cipher [text cipher-key]
+  (let [cipher-bits (mapcat bits-for-char cipher-key)
+        repeated-cipher (mapcat identity (repeat cipher-bits))
+        text-bits (mapcat bits-for-char text)
+        ciphered-bits (map xor text-bits repeated-cipher)]
+    (prn ciphered-bits)
+    (map char-for-bits (partition 8 ciphered-bits))
+
+    )
+
+
+  )
