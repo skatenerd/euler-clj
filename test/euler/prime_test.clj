@@ -32,18 +32,3 @@
   (testing "7"
     (is (prime? 7))))
 
-(deftest problem
-  (testing "problem"
-    (is (miller-rabin 31 10))))
-
-;(deftest mill-rabin-speed
-;  (testing "big"
-;    (is (miller-rabin 611953 10)))
-;         )
-
-;(deftest miller-rabin-check
-;  (testing "all"
-;    (doall
-;      (map
-;        #(testing (str "miller rabin " %) (is (= (prime? %) (miller-rabin % 4))))
-;        (range 4 5000)))))
