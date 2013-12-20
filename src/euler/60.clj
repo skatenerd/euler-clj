@@ -7,13 +7,12 @@
     ))
 
 
-(defn pairs [elements]
-  (let [with-indices (keep-indexed #(identity [%2 %1]) elements)]
-    (set
-      (for [first-element with-indices
-            second-element with-indices
-            :when (not (= first-element second-element)) ]
-        [(first first-element) (first second-element)]))))
+(defn pairs [unique-elements]
+  (set (for [first-element unique-elements
+        second-element unique-elements
+        :when (not (= first-element second-element))
+        ]
+    [first-element second-element])))
 
 
 (defn concat-numbers [head tail]
@@ -26,17 +25,34 @@
   (and
     (every? #(prime? % primes-reservoir) (map #(apply concat-numbers %) (pairs primes)))))
 
-(defn find-it [limit]
-  (let [primes-reservoir (primes-under limit)
-        combinations
-        (for [p1 primes-reservoir
-              p2 primes-reservoir
-              :while (<= p2 p1)
-              p3 primes-reservoir
-              :while (<= p3 p2)
-              p4 primes-reservoir
-              :while (<= p4 p3)
-              p5 primes-reservoir
-              :while (<= p5 p4)]
-          [p1 p2 p3 p4 p5])]
-      (first (filter #(remarkable-primes? % primes-reservoir) combinations))))
+
+(defn dfs [node neighbors predicate]
+  (prn node)
+  (if (predicate node)
+    node
+    (first
+      (filter
+        identity
+        (map #(dfs % neighbors predicate) (neighbors node))))))
+
+(defn composable-pairs [primes]
+  (set (filter #(prime? (apply concat-numbers %)) (pairs primes))))
+
+(defn find-interesting-primes [upper-boundary length]
+  (let [primes (primes-under upper-boundary)
+        composable-pairs (composable-pairs primes)]
+    (dfs
+      #{}
+      (fn [interesting-so-far]
+        (let [addable-stuff
+              (filter
+                (fn [candidate-prime]
+                  (every?
+                    #(and
+                       (contains? composable-pairs [% candidate-prime])
+                       (contains? composable-pairs [candidate-prime %]))
+                    interesting-so-far))
+                primes)]
+          (map #(conj interesting-so-far %) addable-stuff)
+          ))
+      #(= length (count %)))))
