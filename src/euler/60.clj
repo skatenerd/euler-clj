@@ -40,4 +40,4 @@
               :while (<= p5 p4)]
           [p1 p2 p3 p4 p5])
           unique-combinations combinations]
-      (filter #(remarkable-primes? % primes-reservoir) unique-combinations)))
+      (first (filter #(remarkable-primes? % primes-reservoir) unique-combinations))))

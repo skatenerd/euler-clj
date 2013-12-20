@@ -1,2 +1,8 @@
 (sqrt 5)
 (Math/sqrt 5)
+(for [a (range 5)
+      b (range 5)
+      :while (<= b a)
+      c (range 5)
+      :while (<= c b)]
+[a b c])
