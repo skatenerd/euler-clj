@@ -31,13 +31,13 @@
         combinations
         (for [p1 primes-reservoir
               p2 primes-reservoir
-              :when (<= p2 p1)
+              :while (<= p2 p1)
               p3 primes-reservoir
-              :when (<= p3 p2)
+              :while (<= p3 p2)
               p4 primes-reservoir
-              :when (<= p4 p3)
+              :while (<= p4 p3)
               p5 primes-reservoir
-              :when (<= p5 p4)]
+              :while (<= p5 p4)]
           [p1 p2 p3 p4 p5])
           unique-combinations combinations]
       (filter #(remarkable-primes? % primes-reservoir) unique-combinations)))
