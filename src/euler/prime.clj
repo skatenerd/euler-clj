@@ -30,8 +30,10 @@
 
 (defn prime?
   ([target primes]
-   (and (> target 1)
-       (not-any? #(divides? target %) primes)))
+   (let [limit (inc (int (Math/sqrt target)))
+         primes (take-while #(<= % limit) primes)]
+     (and (> target 1)
+       (not-any? #(divides? target %) primes))))
   ([target]
   (prime? target (relevant-tries target))))
 

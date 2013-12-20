@@ -22,19 +22,22 @@
 
     (+ raised tail)))
 
-(defn remarkable-primes? [primes]
+(defn remarkable-primes? [primes primes-reservoir]
   (and
-    (every? prime? (map #(apply concat-numbers %) (pairs primes)))))
+    (every? #(prime? % primes-reservoir) (map #(apply concat-numbers %) (pairs primes)))))
 
 (defn find-it [limit]
-  (let [primes-reservoir (primes-under limit)]
-    (set
-      (for [p1 primes-reservoir
-            p2 primes-reservoir
-            p3 primes-reservoir
-            p4 primes-reservoir
-            p5 primes-reservoir]
-        (if (remarkable-primes? [p1 p2 p3 p4 p5])
-          (do
-            (prn [p1 p2 p3 p4 p5])
-            (set [p1 p2 p3 p4 p5])))))))
+  (let [primes-reservoir (primes-under limit)
+        combinations
+        (for [p1 primes-reservoir
+              p2 primes-reservoir
+              :when (<= p2 p1)
+              p3 primes-reservoir
+              :when (<= p3 p2)
+              p4 primes-reservoir
+              :when (<= p4 p3)
+              p5 primes-reservoir
+              :when (<= p5 p4)]
+          [p1 p2 p3 p4 p5])
+          unique-combinations combinations]
+      (filter #(remarkable-primes? % primes-reservoir) unique-combinations)))

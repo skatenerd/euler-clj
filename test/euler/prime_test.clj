@@ -23,12 +23,16 @@
     (is (prime? 2)))
   (testing "3"
     (is (prime? 3)))
+  (testing "3"
+    (is (prime? 3 (primes-under 10))))
   (testing "4"
     (is (not (prime? 4))))
   (testing "5"
     (is (prime? 5)))
   (testing "6"
     (is (not (prime? 6))))
+  (testing "6"
+    (is (not (prime? 6 (primes-under 10)))))
   (testing "7"
     (is (prime? 7))))
 
