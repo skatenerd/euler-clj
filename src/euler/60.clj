@@ -9,10 +9,9 @@
 
 (defn pairs [unique-elements]
   (set (for [first-element unique-elements
-        second-element unique-elements
-        :when (not (= first-element second-element))
-        ]
-    [first-element second-element])))
+             second-element unique-elements
+             :when (not (= first-element second-element))]
+         [first-element second-element])))
 
 
 (defn concat-numbers [head tail]
@@ -21,13 +20,15 @@
 
     (+ raised tail)))
 
+(def fast-concat-numbers (memoize concat-numbers))
+
+
 (defn remarkable-primes? [primes primes-reservoir]
   (and
     (every? #(prime? % primes-reservoir) (map #(apply concat-numbers %) (pairs primes)))))
 
 
 (defn dfs [node neighbors predicate]
-  (prn node)
   (if (predicate node)
     node
     (first
@@ -35,12 +36,15 @@
         identity
         (map #(dfs % neighbors predicate) (neighbors node))))))
 
-(defn composable-pairs [primes]
-  (set (filter #(prime? (apply concat-numbers %)) (pairs primes))))
+(def fast-prime (memoize prime?))
+
+(defn composable? [p1 p2]
+  (and
+    (fast-prime (fast-concat-numbers p1 p2))
+    (fast-prime (fast-concat-numbers p2 p1))))
 
 (defn find-interesting-primes [upper-boundary length]
-  (let [primes (primes-under upper-boundary)
-        composable-pairs (composable-pairs primes)]
+  (let [primes (primes-under upper-boundary)]
     (dfs
       #{}
       (fn [interesting-so-far]
@@ -48,9 +52,7 @@
               (filter
                 (fn [candidate-prime]
                   (every?
-                    #(and
-                       (contains? composable-pairs [% candidate-prime])
-                       (contains? composable-pairs [candidate-prime %]))
+                    #(composable? candidate-prime %)
                     interesting-so-far))
                 primes)]
           (map #(conj interesting-so-far %) addable-stuff)

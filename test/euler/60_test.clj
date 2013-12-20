@@ -34,7 +34,6 @@
   dfs-test
   (testing
     "dfs"
-    (prn (composable-pairs #{2 3 5 7}))
     (let [graph {1 [2 3 99999]
                  2 [4]
                  3 [8]
@@ -47,5 +46,5 @@
 (deftest
   finding-interesting-primes
   (is (= #{3 7 109 673} (find-interesting-primes 900 4)))
-  ;(prn (find-interesting-primes 10000 5))
+  (prn (find-interesting-primes 10000 5))
   )

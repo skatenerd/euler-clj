@@ -22,3 +22,7 @@
 (count #{1})
 (contains? #{1} 1)
 (contains? #{1} 1 1)
+(include? #{1} 1)
+(includes? #{1} 1)
+(contains? #{1} 1)
+(reduce + #{8389 5701 13 5197 6733})
