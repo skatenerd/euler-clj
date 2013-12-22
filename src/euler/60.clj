@@ -3,16 +3,13 @@
 
 (defn- crude-log [target base]
   (let [raises (iterate #(* base %) 1)]
-    (first (keep-indexed #(if (> %2 target) %1) raises))
-    ))
-
+    (first (keep-indexed #(if (> %2 target) %1) raises))))
 
 (defn pairs [unique-elements]
   (set (for [first-element unique-elements
              second-element unique-elements
              :when (not (= first-element second-element))]
          [first-element second-element])))
-
 
 (defn concat-numbers [head tail]
   (let [exponent (crude-log tail 10)
@@ -31,10 +28,7 @@
 (defn dfs [node neighbors predicate]
   (if (predicate node)
     node
-    (first
-      (filter
-        identity
-        (map #(dfs % neighbors predicate) (neighbors node))))))
+    (some #(dfs % neighbors predicate) (neighbors node))))
 
 (def fast-prime (memoize prime?))
 
