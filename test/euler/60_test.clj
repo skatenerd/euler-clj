@@ -30,21 +30,9 @@
 
   )
 
-(deftest
-  dfs-test
-  (testing
-    "dfs"
-    (let [graph {1 [2 3 99999]
-                 2 [4]
-                 3 [8]
-                 4 [11]}
-          root 1
-          neighbors #(get graph % [])
-          predicate #(> % 10)]
-      (is (= 11 (dfs root neighbors predicate))))))
 
 (deftest
   finding-interesting-primes
   (is (= #{3 7 109 673} (find-interesting-primes 900 4)))
-  (prn (find-interesting-primes 10000 5))
+  ;(prn (find-interesting-primes 10000 5))
   )

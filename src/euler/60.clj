@@ -1,5 +1,6 @@
 (ns euler.60
-  (:use euler.prime))
+  (:use euler.prime
+        euler.dfs))
 
 (defn- crude-log [target base]
   (let [raises (iterate #(* base %) 1)]
@@ -24,11 +25,6 @@
   (and
     (every? #(prime? % primes-reservoir) (map #(apply concat-numbers %) (pairs primes)))))
 
-
-(defn dfs [node neighbors predicate]
-  (if (predicate node)
-    node
-    (some #(dfs % neighbors predicate) (neighbors node))))
 
 (def fast-prime (memoize prime?))
 
