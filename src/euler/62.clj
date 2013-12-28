@@ -19,11 +19,7 @@
 (defn- digits [number]
   (map #(Integer/parseInt (str %)) (seq (str number))))
 
-(defn digit-permutations [number]
-  (permutations (set (digits number))))
-
 (def cubes (map #(* % % %) (range 1 10000)))
-(defn cube? [n] (contains? cubes n))
 
 (def cube-bucket
   (reduce
@@ -36,4 +32,4 @@
   (filter (fn [[k v]] (= 5 (count v))) cube-bucket))
 
 (def the-answer (map #(apply min (val %)) candidates))
-(prn the-answer)
+;(prn the-answer)
