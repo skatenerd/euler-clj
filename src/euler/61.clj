@@ -60,7 +60,6 @@
       figurate)))
 
 (defn with-addable-numbers [node max-length]
-  (prn (:numbers-picked node))
   (let [numbers-so-far (:numbers-picked node)
         remaining-figurates (:remaining-figurates node)]
     (apply
