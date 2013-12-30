@@ -32,4 +32,3 @@
   (filter (fn [[k v]] (= 5 (count v))) cube-bucket))
 
 (def the-answer (map #(apply min (val %)) candidates))
-;(prn the-answer)
