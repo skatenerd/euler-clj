@@ -8,15 +8,10 @@
 
 (defn dfs-all
   ([node neighbors predicate]
-   (dfs-all node neighbors predicate #{}))
-  ([node neighbors predicate finds]
    (let [new-finds (if (predicate node)
-                     (conj finds node)
-                     finds)]
+                     #{node}
+                     #{})]
      (reduce
        union
        new-finds
-       (map #(dfs-all % neighbors predicate) (neighbors node)))))
-
-
-  )
+       (map #(dfs-all % neighbors predicate) (neighbors node))))))
